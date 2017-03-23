@@ -95,11 +95,11 @@ However, for high dimensional inputs, the performance of knn is poor due to the 
 
 The main way to combat the curse of dimensinality is to make some assumptions about the nature of the data distribution (**either $p(y|\mathbf x)$ for a supervised problem or $p(\mathbf x)$ for an unsupervised problem**). These assumptions, known as **inductive bias**, are often embodied in the form of a parametric model
 
+#### Model Selection
+
+Using cross-validation
+
 ### Notes
 
 * data across a variety of domains exhibits a property known as the **long tail**
 * The probabilistic approach of frequent itemset mining is more predictively accurate than association rules, but less interpretible. 
-
-#### Model Selection
-
-Using cross-validation
