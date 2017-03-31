@@ -41,6 +41,16 @@ Assuming that X has 6 possible status and Y has 5 possible status, the general j
 
 Since the cdf F is a monotonically increasing function, it has an inverse $(F^{-1})$. If F is the cdf of X, then $F^{-1}(\alpha)$ is the value of $x_{\alpha}$ such that $P(X <= x_{\alpha}) = \alpha$, this is called the $\alpha$ quantile of F 
 
+#### Generative classifiers
+
+$$
+p(y=c|\mathbf x, \theta) = {{p(y=c|\theta)p(x|y=c,\theta)}\over{\sum_{c'}p(y=c'|\theta)p(\mathbf x|y=c', \theta)}}
+$$
+
+It specifies how to generate the data using **class-conditional density** $p(\mathbf x | y = c)$, and the class prior $p(y=c)$
+
+Another approach is to **directly fit the class posterior**, $p(y=c|\mathbf x)$
+
 ### Discrete distributions 
 
 * binomial 

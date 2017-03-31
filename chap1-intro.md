@@ -10,7 +10,7 @@ The **mode** of the distribution $p(y|\mathbf x, D)$ is the value that occurs mo
 $$
 \hat y = \hat f(\mathbf x) = {argmax}^C_{c=1} p(y = c | \mathbf x, D)
 $$
-This is also known as a **MAP estimate (maximum a posteriori)**
+This is also known as a **MAP estimate (maximum a posteriori)**. This kind of **MAP** is only in the classification case
 
 #### Regression
 
