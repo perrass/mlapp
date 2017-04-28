@@ -72,7 +72,7 @@ $$
 One assumption of linear regression is that the residual error is normally distributed, but the data is usually with long tail. Hence, the model is not quiet well to fit outliers. There are two solution
 
 1.  Using a more robust distribution like Laplace distribution, but the objective function $exp(-{1\over b}|y-\mathbf w^T x)$is non-linear and is hard to optimize. A **split variable** trick is to define $r_i = r_i^+ - r_i^-$, and then the problem is transformed to a **linear program** with D+2N unknowns and 3N constraints
-2. Using $-l(\theta)$ under a Laplace likelihood is to minimize the **Huber loss** function, which is everywhere differentiable 
+2.  Using $-l(\theta)$ under a Laplace likelihood is to minimize the **Huber loss** function, which is everywhere differentiable 
 
 $$
 L_H(r, \delta) = \begin{cases} & r^2 / 2 ~~~\quad \qquad if |r| <= \delta \\
@@ -84,5 +84,31 @@ Consequently optimizing the Huber loss is much faster than using the Laplace lik
 
 ### Ridge Regression
 
-The purpose of ridge regression is to overcome overfitting. And ridge regression is way to ameliorate this problem by **using MAP estimation with a Gaussian prior**
+The purpose of ridge regression is to overcome overfitting. And ridge regression is way to ameliorate this problem by **using MAP estimation with a Gaussian prior**.
+
+The reason that the MLE can overfit is that it is picking the parameter values that are the best for modeling the training data; but if the data is noisy, **such parameters often result in complex functions**. To "smooth" the model, we use a zero-mean Gaussian prior:
+$$
+p(\mathbf w) = \prod_j~N(w_j|0, \tau^2)
+$$
+where ${1\over{\tau^2}}$ controls the strength of the prior. And the corresponding **MAP estimation problem** becomes
+$$
+argmax_{\mathbf w}\sum_{i=1}^N~logN(y_i|w_0+\mathbf w^T\mathbf x_i, \sigma^2)+\sum_{j=1}^Dlog~N(w_j|0, \tau^2)
+$$
+It is a simple exercise to show that this is equivalent to minimizing the following:
+$$
+J(\mathbf w) = {1\over N}\sum^N_{i=1}(y_i-(w_0+\mathbf w^T \mathbf x_i))^2 + \lambda||\mathbf w||^2_2
+$$
+where $\lambda = \sigma^2/\tau^2$ and $||\mathbf w||^2_2=\mathbf w^T\mathbf w$. **So both the variance of the assumed prior, $1 / \tau^2$, and the variance of the sample, $\sigma^2$,affect the complexity penalty**.
+
+The solution is
+$$
+\hat {\mathbf w_{ridge}} = (\lambda \mathbf I_D + \mathbf X^T \mathbf X)^{-1}\mathbf X^T\mathbf y
+$$
+This technique is known as **ridge regression** or **penalized least squares**
+
+**We will consider a variety of different priors in this book. Each of these corresponds to a different form of regularization**
+
+### Bayesian Linear Regression (briefly)
+
+Although **ridge regression** is a useful way to **compute a point estimate**, sometimes we want to **compute the full posterior over $\mathbf w$ and $\mathbf \sigma^2$**. In other words, ridge regression only returns **one line** or **a best line**, but bayesian linear regression returns **all sets of lines with probability**. ridge regression is one line in the sets, which owns the **maximum posterior**.
 
