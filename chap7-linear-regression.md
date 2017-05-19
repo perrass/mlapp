@@ -31,7 +31,7 @@ l(\theta) = log~p(D|\theta)=\sum_{i=1}^N~log~p(y_i|\mathbf x_i, \theta)
 $$
 Then we insert the Caussian into the above, and the log likelihood is
 $$
-\begin{align} l(\theta) & = \sum_{i=1}^N~log~[({1\over{2\pi\sigma^2}})^{1\over2}exp(-{1\over {2\sigma^2}}(y_i-\mathbf w^T \mathbf x_i))] \\
+\begin{align} l(\theta) & = \sum_{i=1}^N~log~[({1\over{2\pi\sigma^2}})^{1\over2}exp(-{1\over {2\sigma^2}}(y_i-\mathbf w^T \mathbf x_i)^2)] \\
 & = {-1\over{2\sigma^2}}RSS(\mathbf w) - {N\over2}log(2\pi\sigma^2)
 \end{align}
 $$
