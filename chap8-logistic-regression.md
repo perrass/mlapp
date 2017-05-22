@@ -38,22 +38,65 @@ x += v
 
 **Why momentum is needed?**
 
-The steepest descent path with exact line searches exhibits a characteristic **zig-zag** behavior. Assume the cost function $\phi(\eta) = f(\mathbf  \theta_k + \eta\mathbf d_k)$, 
+Develop a stable method for **picking up the step size**, so the method is guaranteed to converge to a **local optimum** no matter where we start. (This property is called **global convergence**, which should not be confused with convergence to the global optimum). 
+
+Assume the cost function $\phi(\eta) = f(\mathbf  \theta_k + \eta\mathbf d_k) \approx f(\theta) + \eta\mathbf g^T \mathbf d$, where $\mathbf d$ is our descent direction. To optimize the function, we have $\eta_k = argmin_{\eta > 0} \phi(\eta)$. A neccessary condition for the optimum is $\phi'(\eta) = 0$. By the chain rule, $\phi'(\eta) = \mathbf d^T \mathbf g$, where $\mathbf g = f'(\theta + \eta \mathbf d)$ is the gradient at the end of the step. So **we either have $\mathbf g = \mathbf 0$, which means we have found a stationary point, or $\mathbf g \bot \mathbf d$, which means that exact search stops at a point where the local gradient is perpendicular to the search direction**. Hence consecutive directions will be orthogonal.
+
+One simple heuristic to reduce the effect of  **zig-zag** behavior is to add a momentum term. 
+
+PS: So **the direct of gradient decent is not orthogonal to the former step, due to the learning rate is not optimal**.
 
 #### Nesterov Momentum
 
+```python
+x_head = x + mu * v
+v = mu * v - learning_rate * dx_head
+x += v
+```
+
 #### Learning Rate
+
+Learning rate with fixed size would be too high when the gradient is too small. 
+
+1. Step decay, reducing the learning rate by a half every 5 epochs or by 0.1 every 20 epochs
+2. exponential decay $\alpha = \alpha_0e^{-kt}$, $\alpha, k$ are hyper parameters, and t is the iterations
+3. $1 / t$ decay, $\alpha = {\alpha_0 \over {1+kt}}$ 
 
 #### Adagrad
 
+```python
+cache += dx ** 2
+x += -learning_rate * dx / (np.sqrt(cache) + eps)
+```
+
+eps is the smooth parameter to ensure the denominator is not zero, which value is 1e-6 to 1e-8
+
 #### RMSprop
+
+```python
+cache = decay_rate + (1 - decay_rate) * dx ** 2
+x += -learning_rate * dx / (np.sqrt(cache) + eps)  # the range of decay_rate is [0.9, 0.99, 0.999] 
+```
 
 **The improvment of RMSprop compared of Adagrad**
 
+The new method to calculate cache ensure the update of cache is **monotonically smaller**
+
 #### Adam
+
+```python
+m = beta1 * m + (1 - beta1) * dx		# the default value of beta1 is 0.9
+v = beta2 * v + (1 - beta2) * dx ** 2   # the default value of beta2 is 0.999
+x += -learning_rate * m / (np.sqrt(v) + eps)
+```
+
+**adam is the default optimizer for many cases, and SGD + nesterov momentum is an alternative**
 
 ### Softmax
 
 ### Gaussian discriminat analysis
 
+One
+
 ### Generative vs Discriminative classifiers 
+
