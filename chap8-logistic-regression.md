@@ -2,7 +2,7 @@
 
 ### Intro
 
-One way to build a probabilistic classifier is to **create a joint model of the form $p(y, \mathbf x)$ and then to condition on $\mathbf x$**, then **deriving $p(y|\mathbf x)$**. This is called the **generative approach**. Alternative approach is to **fit a model of the form $p(y|\mathbf x)$ directly**. This is called the **discriminative approach**
+One way to build a probabilistic classifier is to **create a joint model of the form $p(y, \mathbf x)$ and then to condition on $\mathbf x$**, then **to derive p(y|\mathbf x)$ by Bayes rules**. This is called the **generative approach**. Alternative approach is to **fit a model of the form $p(y|\mathbf x)$ directly**. This is called the **discriminative approach**
 
 ### Model specification
 
@@ -96,7 +96,73 @@ x += -learning_rate * m / (np.sqrt(v) + eps)
 
 ### Gaussian discriminat analysis
 
-One
+One important application of MVNs is to define the class conditional densities in a generative classifier 
+$$
+p(\mathbf x | y = c, \mathbf \theta) = N(\mathbf x | \mathbf \mu_c, \mathbf \Sigma_c)
+$$
+The resulting technique is called Gaussian discriminat analysis. If $\mathbf \Sigma_c$ is **diagnoal**, this is equivalent to **naive Bayes**
+
+Using Bayes rules, we can classify a feature vector
+$$
+\hat y(\mathbf x) = argmax_x[log~p(y=c|\pi) + log~p(\mathbf x | \mathbf \theta_c)]
+$$
+When we compute the probability of $\mathbf x$ under each class conditional density, we are measuring the distance from $\mathbf x$ to the center of each class, $\mathbf \mu_c$, using **Mahalanbis distance**. This can be thought of as a **nearest centroids classifier**
+
+#### LDA (Linear discriminant analysis) 
+
+When considering a special case in which the **convariance matrices are tied or shared across classes, $\mathbf \Sigma_c = \Sigma$
+$$
+p(y = c | \mathbf x, \mathbf \theta) \sim exp[\mu^T_c\Sigma^{-1}\mathbf x - \frac 1 2 \mu^T_c\Sigma^{-1}\mathbf \mu_c + log ~\pi_c] exp[-\frac 1 2 \mathbf x\Sigma^{-1}\mathbf x]
+$$
+Define
+$$
+\gamma_c = - \frac 1 2 \mu^T_c\Sigma^{-1}\mathbf \mu_c + log ~\pi_c \\
+\beta_c = \Sigma^{-1}\mu_c
+$$
+then
+$$
+p(y = c | \mathbf x, \mathbf \theta) = {{e^{\beta_c^T + \gamma_c}} / \sum_{c'}e^{\beta_{c'}^T + \gamma_{c'}}} = \mathbf S(\eta)_c
+$$
+where S is the **softmax function**
+
+#### Two classes LDA
+
+The posterior is given by
+$$
+p(y = 1 | \mathbf x, \mathbf \theta) = sigmoid((\beta_1 - \beta_0)^T\mathbf x + (\gamma_1 - \gamma_0))
+$$
+if we define
+$$
+\mathbf w = \beta_1 - \beta_0 = \Sigma^{-1}(\mu_1 - \mu_0) \\
+\mathbf x_0 = \frac 12 (\mu_1 + \mu_0) - (\mu_1 - \mu_0){log(\pi_1/\pi_2)\over{(\mu_1-\mu_0)^T\Sigma^{-1}(\mu_1-\mu_0)}}
+$$
+then $\mathbf w^T \mathbf x_0 = -(\gamma_1 - \gamma_0)$, and hence
+$$
+p(y = 1 | \mathbf x, \mathbf \theta) = sigmoid(\mathbf w^T(\mathbf x - \mathbf x_0))
+$$
+**So the final decision rule is as follows: shift $\mathbf x$ by $\mathbf x_0$, project onto the line $\mathbf w$, and see if the result is positive or negative**
+
+![](/assets/LDA.png)
+
+#### MLE for discrimiant analysis
+
+To **fit a discriminant analysis model**, the simplest way is to **use maximum likelihood**.
+$$
+log~p(D|\theta) = [\sum_{i=1}^N\sum_{c=1}^CI(y_i = c)log\pi_c] + \sum_{c=1}^C[\sum_{i:y_i=c}logN(\mathbf x | \mathbf \mu_c, \Sigma_c)]
+$$
+For the class-conditional densities, we just partition the data based on its class label, and compute the MLE for each Gaussian
+$$
+\hat \mu_c = \frac 1 {N_c} \sum_{i:y_i=c}\mathbf x_i, \qquad \hat \Sigma_c = \frac 1 {N_c} \sum_{i:y_i=c} (\mathbf x_i - \hat {\mathbf \mu_c})(\mathbf x_i - \hat {\mathbf \mu_c})^T
+$$
 
 ### Generative vs Discriminative classifiers 
 
+When fitting a discriminative model, we usually maximize the conditonal log likelihood $\sum_{i=1}^Nlog~p(y_i|\mathbf x_i, \theta)$, whereas when fitting a generative model, we usually maximize the joint log likelihood $\sum_{i=1}^Nlog~p(y_i, \mathbf x_i | \theta)$
+
+#### Pros and cons
+
+* Easy to fit?: A naive Bayes and an LDA model can by fit by simple counting and averaging. By constrast, logistic regression requires solving a convex optimization problem
+* Fit classes seperately: In a generative classifier, we estimate the parameters of each class conditional independently, so we do not have to retrain the model when we add more classes. In discriminative models, all the parameters interact, so the whole model must be retrained if we add a new class
+* Can handle unlabeled training data: This is fairly easy to do using generative models, but is much harder to do with discriminative models
+* Handle feature preprocessing: A big advantage of discriminative methods is that they allow us to preprocess the input in arbitrary ways, e.g., we can replace $\mathbf x$ with $\phi(\mathbf x)$. It is ofen hard to define a generative model on such pre-processed data, since the new features are correlated in complex ways
+* Well-calibrated probabilities: Some generative models, such as naive Bayes, make strong independence assumptions which are often not valid. This can result in very extreme posterior class probabilities (very near 0 or 1). Discriminative models, such as logistic regression, are usually better calibrated in terms of their probability estimates
