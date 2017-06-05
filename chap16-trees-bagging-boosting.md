@@ -83,4 +83,7 @@ for t = 1, 2, ... , T
 
 return $G(\mathbf x) = sign(\sum^T_{t=1}\alpha_tg_t(\mathbf x))$
 
-**If error rate is 0, then $\Delta t = 0$
+**If error rate is 0, then $\Delta t = 0$**
+
+
+
