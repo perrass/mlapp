@@ -42,7 +42,7 @@ Develop a stable method for **picking up the step size**, so the method is guara
 
 Assume the cost function $\phi(\eta) = f(\mathbf  \theta_k + \eta\mathbf d_k) \approx f(\theta) + \eta\mathbf g^T \mathbf d$, where $\mathbf d$ is our descent direction. To optimize the function, we have $\eta_k = argmin_{\eta > 0} \phi(\eta)$. A neccessary condition for the optimum is $\phi'(\eta) = 0$. By the chain rule, $\phi'(\eta) = \mathbf d^T \mathbf g$, where $\mathbf g = f'(\theta + \eta \mathbf d)$ is the gradient at the end of the step. So **we either have $\mathbf g = \mathbf 0$, which means we have found a stationary point, or $\mathbf g \bot \mathbf d$, which means that exact search stops at a point where the local gradient is perpendicular to the search direction**. Hence consecutive directions will be orthogonal.
 
-One simple heuristic to reduce the effect of  **zig-zag** behavior is to add a momentum term. 
+One simple heuristic to reduce the effect of  **zig-zag** behavior is to add a **momentum term**, **momentum also can avoid local optimal**. 
 
 PS: So **the direct of gradient decent is not orthogonal to the former step, due to the learning rate is not optimal**.
 
