@@ -101,11 +101,20 @@ Hence, $\hat d_{min} = 0.0202, \hat d_{max} = 0.0376$ and we should launch the c
 
 ![](/assets/Confidence_Interval.png)
 
-## Policy and Ethics for Experiments
-
-
-
 ## Choosing and Characterizing Metrics
+
+### Redefine the customer funnel
+
+1. Homepage visits
+2. Course list visits
+3. Visits to course pages
+4. Account created
+5. Enrollement
+6. Coaching use
+7. Complemetation
+8. Jobs
+
+Each stage is a metric: the number of users who reach that point, rates or probabilities 
 
 ## Designing an Experiment
 
