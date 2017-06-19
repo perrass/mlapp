@@ -1,12 +1,13 @@
 # chap16-trees-bagging-boosting
 
-## 机器学习技法
-
-### Blending and Bagging
+## Blending and Bagging
 
 Motivation: validation means to select a best model from a group of good models, while aggregation means to combine a group of weak models to get a better prediction
 
-Aggregation is kind of feature transformation due to combining the rules with different spliting criteria, and is kind of regularization due to combining extreme model and generate model
+Aggregation is kind of **feature transformation** due to combining the rules with different spliting criteria, and is kind of **regularization** due to combining extreme models and decrease the model complexity.		
+
+* Blending: Decrease variance by a set of models
+* Bootstrap: Decrease bias by randomly simulating more samples. This lead to Bagging and Random Forest, which can decrease variance and bias simutanously.
 
 #### Math Notations
 
@@ -36,7 +37,7 @@ This means
 $$
 avg(E_{test}(g_t)) = avg(\epsilon(g_t-G)^2) + E_{test}(G) \ge E_{test}(G)
 $$
-也就是说，平均多个$g_t$的精度要高于$G$，所以uniform blending比任何单一假设好
+也就是说，blending的结果$E_{test}(G) \le avg(E_{test}(g_t))$，理论上说明在Regression和MLE的情况下，blending的效果不会更差
 
 #### Linear Blending
 
@@ -48,7 +49,7 @@ target:\qquad min_{\alpha_t\ge0}\frac 1N\sum^N_{n=1}(y_n-\sum^T_{t=1}\alpha_tg_t
 $$
 **This is the basic function expansion**
 
-#### Ant blending (stack)
+#### Any blending (stack)
 
 #### Bagging
 
