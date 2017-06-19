@@ -8,6 +8,7 @@ Aggregation is kind of **feature transformation** due to combining the rules wit
 
 * Blending: Decrease variance by a set of models
 * Bootstrap: Decrease bias by randomly simulating more samples. This lead to Bagging and Random Forest, which can decrease variance and bias simutanously.
+* Bagging: works reasonably well **if base algorithm sensitive to data randomness**
 
 #### Math Notations
 
