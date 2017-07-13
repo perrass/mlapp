@@ -74,15 +74,13 @@ This means that **with the same data loss, we choose a set of parameters with le
 
 #### Setting Delta
 
-Practically, we set $\Delta = 1.0$ which is safe for all cases. These two parameters $\Delta$ and $\lambda$ are all regularizers, but with the same functionality (rather than L1 and L2). The effect of change of $\Delta$, can be get from changing $\lambda$, because the weights can **shrink or stretch the differences arbitrarily**. Hence, **the only real tradeoff is how large we allow the weights to grow by tuning $\lambda$ **
+Practically, we set $\Delta = 1.0$ which is safe for all cases. These two parameters $\Delta$ and $\lambda$ are all regularizers, but with the same functionality (rather than L1 and L2, considering the tech called **elastic net**). The effect of change of $\Delta$, can be get from changing $\lambda$, because the weights can **shrink or stretch the differences arbitrarily**. Hence, **the only real tradeoff is how large we allow the weights to grow by tuning $\lambda$ **
 
 #### Optimization in primal
 
 In most machine learning materials, SVM is trained by the tricks of **kernels, duals, or the SMO algorithm**. However, in this class, we will always work with the optimization objectives in their **unconstrained primal form**. Many of these objectives are technically not differentiable, but in practice this is not a problem and it is common to use a **subgradient**
 
 #### Other Multiclass SVM formulations
-
-
 
 ---
 

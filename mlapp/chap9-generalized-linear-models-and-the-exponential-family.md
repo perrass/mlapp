@@ -139,5 +139,85 @@ PS: 需要证明，exponential family满足maxent的约束；和性质3
 
 ## Generalized Linear Models
 
-## Prohit Regressions
+### Basics
 
+Generalized linear models are those models in which the **output density is in the exponential family**, and in which the **mean parameters are a linear combination of the inputs, passed through a possibly nonlinear function**, such as logistic function
+$$
+p(y_i|\theta, \sigma^2) = exp[\frac {y_i\theta - A(\theta)} {\sigma^2} + c(y_i, \sigma^2)]
+$$
+
+* $\sigma^2$ is the **dispersion parameter** (often set to 1)
+* $\theta$ is the natural parameter
+* $A$ is the partition function
+* $c$ is a normalization constant
+
+![](assets/glm.png)
+
+* To convert from the mean parameter to the natural parameter we can use a function $\psi$. This function is **uniquely determined by the form of the emponential family distribution** 
+* $g^{-1}$ is the **mean function**, which **makes the mean of the distribution be some invertible monotonic function of this linear combination** ($\eta_i = \mathbf w^T \mathbf x_i$)
+* The inverse of the mean function, is called the **link function**. We are **free to choose almost any function we like for $g$**, so long as it is **invertible**, and so long as $g^{-1}$ **has the appropriate range**
+* One particularly simple form of link function is to use $g = \psi$, this is called **canonical link function**. E.g., for the Bernoulli/binomial distribution, the canonical link is the **logit function**; $g(\mu) = log (\eta/(1-\eta))$, whose inverse is the logistic function
+
+| Distrib.           | Link g($\mu$) | $\theta = \psi(\mu)$              | $\mu = \psi^{-1}(\theta) = \Bbb E[y]$ |
+| ------------------ | ------------- | --------------------------------- | ------------------------------------- |
+| $N(\mu, \sigma^2)$ | identity      | $\theta = \mu$                    | $\mu = \theta$                        |
+| $Bin(N, \,u)$      | logit         | $\theta = log(\frac \mu {1-\mu})$ | $\mu = sigm(\theta)$                  |
+| $Poi(\mu)$         | log           | $\theta = log(\mu)$               | $\mu = e^{\theta}$                    |
+
+Going back to the defination of GLM, *the mean parameters are a linear combination of the inputs, passed through a possibly nonlinear function*, we find:
+
+* linear combination: $\eta_i = \mathbf w^T \mathbf x_i$
+* nonlinear function: **mean function**, $\mu_i = g^{-1}(\eta_i) = g^{-1}(\mathbf w^T\mathbf x_i)$
+
+---
+
+For **ReLU**, which satisfies the definition of GLM, the mean function is $max(0, \mathbf w^T \mathbf x_i)$. Hence the link function is
+$$
+f(x) =
+\begin{cases}
+& \frac 1 2 (\mathbf w^T \mathbf x_i)^2 & \quad x > 0\\
+& C & \quad x \le 0
+\end{cases}
+$$
+
+---
+
+### ML and MAP estimation
+
+One of the appealing properties of GLMs is that they can be fit using exactly the same methods that we used to fit logistic regression. In particular, the log-likelihood has the following form:
+$$
+l(\mathbf w) = log p(D|\mathbf w) = \frac 1 {\sigma^2} \sum^N_{i=1}\theta_iy_i - A(\theta_i)
+$$
+If we use a canonical link, $\theta_i = \eta_i$, this simplifies to 
+$$
+\nabla_{\mathbf w} l (\mathbf w) = \frac 1 {\sigma^2}[\sum^N_{i=1}(y_i - \mu_i)\mathbf x_i]
+$$
+Hence we can use stochastic gradient descent. However, for improved efficiency, we should use a **second-order method**. For a canonical link, the Hessian is given by
+$$
+\mathbf H = -\frac 1 {\sigma^2} \sum^N_{i=1} \frac {d\mu_i} {d\theta_i} \mathbf x_i\mathbf x_i^T = -\frac 1 {\sigma^2} \mathbf X^T\mathbf S \mathbf X
+$$
+where $\mathbf S = diag(\frac {d\mu_1} {d\theta_1}, ..., \frac {d\mu_N} {d\theta_N})$ is a diagonal weighting matrix. This can be used inside the **IRLS** algorithm
+
+## Probit Regressions
+
+---
+
+**How to get an appropriate S-shape curve with different mean function ? **
+
+In general, we can write $p(y=1|\mathbf x_i, \mathbf w) = g^{-1}(\mathbf w^T\mathbf x_i)$, for any function $g^{-1}$ that maps $[-\infty, \infty]$ to $[0, 1]$. Several possible mean function are
+
+| Name                  | Formula                                  |
+| --------------------- | ---------------------------------------- |
+| Logistic              | $g^{-1}(\eta) = sigm(\eta) = \frac {e^\eta} {1+e^\eta}$ |
+| Probit                | $g^{-1}(\eta) = \Phi(\eta)$              |
+| Log-log               | $g^{-1}(\eta) =exp(-exp(-\eta))$         |
+| Complementary Log-log | $g^{-1}(\eta) =1 - exp(-exp(\eta))$      |
+
+---
+
+The mean function of probit regression is $g^{-1}(\eta) = \Phi(\eta)$, where $\Phi(\eta)$ is the cdf of the standard normal.
+
+**Note: ** The Gaussian noise term is zero mean and unit variance is made without loss of generality. The reasion is that we could easily rescale $\mathbf w$ and add an offset term without changing the likelihood, since 
+$$
+P(N(0, 1)\ge -\mathbf w^T\mathbf x) = P(N(\mu, \sigma^2) \ge -(\mathbf w^T\mathbf x + \mu) / \sigma)
+$$
