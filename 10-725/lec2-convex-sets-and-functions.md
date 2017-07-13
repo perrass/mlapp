@@ -110,8 +110,75 @@ Or, let $f: \mathbf R^k \to \mathbf S^n$, $f(x) = B - \sum^k_{i=1}x_iA_i$.  $C =
 
 #### Definition
 
+$f:\Bbb R^n ->\Bbb R$ such that $dom(f) \subseteq \Bbb R^n$ **convex**, and 
+$$
+f(tx  + (1-t)y) \le tf(x) + (1-t)f(y) \quad  0 \le t \le 1
+$$
+and all $x, y \in dom(f)$
+
+A function $f$ is **strictly convex** if strict inequality holds the former formular whenever $x \neq y$ and $0< t < 1$
+
 #### Examples
 
+* Exponential:  $e^{ax}$
+* Powers: $x^a$ where x > 0 and $a \ge 1$ or $a\le 0$
+* Powers of absolute value $|x|^p$, for $p\ge 1$
+* Logarithm: $-log x$ on $\Bbb R_{++}$
+* Negative entropy: $xlogx$ on $\Bbb R_{++}$
+* **Affine function**: $a^Tx+b$ is both convex and concave
+* **Quadratic function**: $\frac 1 2 x^TQx + b^Tx + c$ is convex provided that $Q \ge 0$ (positive semidefinite) due to $\nabla^2f(x) = Q$
+* **Least squares loss**: $||y-Ax||^2_2$, since $A^TA$ is always positive semidefinite
+* **Norms**. Every norm on $\Bbb R^n$ is convex
+* **Max**. on $\Bbb R^n$
+* **Quadratic-over-linear-function**: $f(x,y) = x^2/y$, with $dom ~f  = \Bbb R \times \Bbb R_{++} = \{(x, y) \in \Bbb R^2 | y > 0\}$ is convex
+* **Log-sum-exp**: $f(x) = log(e^{x_1} + ... + e^{x_n})$
+* **Geometric mean**: $f(x) = (\prod^n_{i=1}x_i)^{1/n}$ is **concave** on $dom ~ f = \Bbb R^n_{++}$
+
 ### Key properties of convex functions
+
+#### First-order conditions
+
+Suppose $f$ is differentiable. Then $f$ is convex if and only if $dom ~ f$ is convex and 
+$$
+f(y) \ge f(x) + \nabla f(x)^T(y-x)
+$$
+holds for all $x, y \in dom ~ f$.
+
+This states that **for a convex function, the first order Taylor approximation is in fact a global underestimator of the function**, and **vice versa**. This means from **local information** about a convex function, we can derive **global information**. Furthermore, if $\nabla f(x) = 0$, then for all $y\in dom ~ f$, $f(y) \ge f(x)$, i.e., x is a global minimizer of the function $f$.
+
+#### Second-order conditions
+
+Suppose $f$ is twice differentiable, that is, its **Hessian** $\nabla^2f$ exists at each point in $dom ~ f$, which is open. Then $f$ is convex if and only if $dom ~ f$ is convex and its Hessian is positive semidefinite: for all $x \in dom ~ f$
+
+---
+
+**Proofs of convexity from former examples**
+
+---
+
+#### Sublevel sets
+
+The a-sublevel set of a function $f: \Bbb R^n \to \Bbb R$ is defined as
+$$
+C_\alpha = \{x \in dom ~ f | f(x)\le \alpha \}
+$$
+Sublevel sets of a convex function are convex.
+
+#### Epigraph
+
+#### Jensen's inequality
+
+$$
+f(tx  + (1-t)y) \le tf(x) + (1-t)f(y)
+$$
+
+is sometimes called **Jensen's inequality**. It is easily extended to convex combinations of more than two points: If $f$ is convex, $x_1, ..., x_k \in dom ~ f$, and $\theta_1, ..., \theta_k \ge 0$ with $\theta_1 + ... + \theta_k = 1$, then
+$$
+f(\theta_1x_1 + ... + \theta_kx_k) \le \theta_1f(x_1) + ... + \theta_kf(x_k)
+$$
+Furthermore, If $x$ is a random variable such that $x\in dom ~ f$ with probability one, and $f$ is convex, then we have
+$$
+f(\mathbf Ex) \le \mathbf Ef(x)
+$$
 
 ### Operations preserving convexity
