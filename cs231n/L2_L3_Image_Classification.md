@@ -82,6 +82,93 @@ In most machine learning materials, SVM is trained by the tricks of **kernels, d
 
 #### Other Multiclass SVM formulations
 
+Multiclass SVM in one way of formulating the SVM over multiple classes. This method is belong to **All-vs-All** strategy. There are other two strageties: **One-vs-All** strategy and **Structured SVM**
+
+For **One-vs-All**, MLAPP quotes
+
+> We train $C​$ binary classifiers, $f_c(\mathbf x)​$, where the data from class $c​$ is treated as positive. and the data from all the other classes is treated as negative. A particular point is assigned to the class for which the distance from the margin, in the positive direction (i.e., in the direction in which class "one" lies rather than class "rest". However, this can result in regions of input space which are **ambiguously labeled** (i.e., both have class $c1​$ and $c2​$)
+
+Alternatively,
+
+> We pick $\hat y(\mathbf x) = argmax_C f_c{(\mathbf x)}$. However, this technique may not work either, since there is no guarantee that the different $f_c$ functions have comparable magnitudes. In addition, each binary subproblem is likely to suffer from the **class imbalance** problem. That is, if we have 10 classes which have uniform distribution, the percent of true label is $10\%$, and that of flase label is $90\%$
+
 ---
 
 ## Softmax
+
+
+
+## Structured Learning 
+
+### Definition
+
+Input and output are both objects with structures (e.g., sequence, list, tree, bounding box,...)
+
+* Speech recognition: Speech signal -> text (sequence -> sequence)
+* Translation: Mandarin -> English (sequence -> sequence)
+* Object Detection: Image -> **bounding box** 
+* Summarization:  Long doc ->  summary (sequence -> sequence)
+* Retrieval: Keyword -> search result (a list of pages)
+
+Formally, in training, we find a function $F$
+$$
+F: X \times Y \to R
+$$
+where $F(X, Y)$: evaluate how compatible the objects $x$ and $y$ is, $R$ is a real value to measure the compatibility
+
+In testing, given an object $x$, we get $y$ by
+$$
+\hat y = argmax_{y\in Y}F(x, y)
+$$
+Furthermore, in training, we estimate the probability $P(x, y)$
+$$
+P: X \times Y \to [0, 1]
+$$
+In testing, given an object $x$
+$$
+\begin{align}
+\hat y & = argmax_{y\in Y}P(y|x) \\
+& = argmax_{y\in Y}\frac {P(x,y)} {P(x)} \\ 
+& = argmax_{y\in Y}P(x, y)
+\end{align}
+$$
+ 也就是，训练一个$(x,y)$的分布，预测时给出x时，y是概率最高的y	
+
+### How to structured learning
+
+#### Problem 1
+
+What does $F(x, y)$ look like?
+
+Assume the linear function, we have $F(x,y) = w_1\phi(x_1,y_1) + ... + w_n\phi(x_n, y_n) = \mathbf w\phi(\mathbf x, \mathbf y)$
+
+#### Problem 2
+
+How to solve the argmax function $y = argmax_{y\in Y}F(x, y)$
+
+For object detection, we can use **Branch and Bound** algorithm or **Selective Search**
+
+For Sequence Labeling, we can use **Viterbi** Algorithm
+
+#### Problem 3
+
+Training: Given training data, how to learn $F(x, y)$. Practically, $F(x, y) = \mathbf w\phi(\mathbf x, \mathbf y)$ and for all training examples $\forall r$, and all incorrect label for r-th example, $\forall y \in Y - \{\hat y^r\}$ we have
+$$
+\mathbf w\cdot \phi(x^r, \hat y^r) > \mathbf w\cdot \phi(x^r, y)
+$$
+
+#### Algorithm
+
+* Input: training data set $\{(x^1, \hat y^1), ..., (x^r, \hat y ^r)\}$
+* Output: weight vector $w$
+* Algorithm: Initialize $w = 0$
+  * Do
+    * For each pair of training example $(x^r, \hat y^r)$
+      * Find the label $\tilde y^r$ maximizing $w\cdot \phi(x^r, y)$
+        * $\tilde y^r = argmax_{y\in Y} w\cdot \phi(x^r, y)$
+      * If $\tilde y^r \ne \hat y^r$, update $w$
+        * $w\to w + \phi(x^r, \hat y^r) - \phi(x^r, \tilde y^r)$
+  * Until $w$ is not updated
+
+### Structured SVM
+
