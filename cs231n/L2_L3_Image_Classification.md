@@ -96,7 +96,47 @@ Alternatively,
 
 ## Softmax
 
+If we change the hinge loss from SVM to **cross-entropy** loss, then the classifier is changed to softmax. The cross-entropy loss is 
+$$
+L_i = -log(\frac {e^{f_{y_i}}} {\sum_j e^{f_j}}) \quad or, equivalently\quad L_i = -f_{y_i}+log\sum_j e^f_J
+$$
 
+#### Information theory view
+
+The cross-entropy between a true distribution $p$ and an estimated distribution $q$ is defined as 
+$$
+H(p, q) = \sum_xp(x)logq(x)
+$$
+The softmax classifier is hence minimizing the cross-entropy between the estimated class probabilities ($q = e^{f_{y_i}}/\sum_je^{f_j}$) and the true distribution $p$. Moreover, since the cross-entropy can be written in terms of **entropy and KL  divergence** as $H(p, q) = H(p) + D_{KL}(p||q)$. **The entropy of the delta function $p$ is zero, this is also equivalent to minimizing the KL divergence between the two distributions (a measure of distance)**. In other words, the cross-entropy objective wants to the predicted distribution to have all of its mass on the correct answer
+
+**Probabilistic interpretation**
+$$
+P(y_i|x_i, W) = \frac {e^{fy_i}} {\sum_j e^{f_j}}
+$$
+is the normalized probability assigned to the correct label $y_i$ given the image $x_i$ and parameterized by $W$. Probabilistically, we add a Gaussian prior over the weight matrix $W$ in terms of $L2$ regularization, then we find the negative log likelihood function of the correct class, and then we optimize the function and get the Maximum a posteriori estimation, which has the optimized $W$
+
+#### Practical issues: output probabilities of softmax
+
+Considering to output probabilities: 
+$$
+\begin{align}
+[1, -2, 0] \to [e^1, e^{-2}, e^0] \to [2.71, 0.14, 1] \to [0.7, 0.04, 0.26]  & \quad (1)\\
+[0.5, -1, 0] \to [e^{0.5}, e^{-1}, e^0] \to [1.65, 0.37, 1] \to [0.55, 0.12, 0.33] & \quad (2)
+\end{align}
+$$
+The penalty parameter $\lambda$ of (2) is the half of that of (1), and this leads to the different probabilities. This means that **the ordering of the scores is interpretable, but the absolute numbers technically are not**
+
+#### Practical issues: hinge and cross-entropy loss
+
+Considering three inputs:
+$$
+\begin{align}
+[10, -2, 3] & \quad (1)\\
+[10, -100, -100] & \quad (2)\\
+[10, 9, 9] & \quad (3)
+\end{align}
+$$
+In situation (1), with $\Delta = 1$, there is no big difference between hinge loss and cross-entropy. However, **the hinge loss cannot distinct the difference between (2) and (3), but the cross-entropy function can**
 
 ## Structured Learning 
 
