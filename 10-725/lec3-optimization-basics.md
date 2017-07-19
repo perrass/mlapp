@@ -135,15 +135,44 @@ Geometrically, If $\nabla f_0(x) \neq 0$, it means that $-\nabla f_0(x)$ defines
 
 #### SVM
 
-#### Hinge form of SVMs
+Given $y\in \{-1, 1\}^n, X \in \Bbb R^{n\times p}$ with rows $x_1, ..., x_n$, consider the SVM problem:
+$$
+\begin{align}
+minimize & \quad \frac 1 2 ||\beta||^2_2+C\sum^n_{i=1}\xi_i\\
+subject ~ to & \quad \xi_i \ge 0 & \quad i = 1, ..., n \\
+& \quad y_i(x_i^T\beta+\beta_0)\ge 1 - \xi_i, & \quad i = 1, ..., n
+\end{align}
+$$
+**Partial optimization**: 
 
-### PCA
+Suppose $x=(x_1, x_2)\in \Bbb R^{n_1+n_2}$, then
+$$
+\begin{align}
+minimize & \quad f(x_1, x_2)\\
+subject ~ to & \quad g_1(x_1) \le 0 \\
+& \quad g_2(x_2)\le 0
+\end{align}
+$$
+is equivalent to 
+$$
+\begin{align}
+minimize & \quad \tilde f(x_1)\\
+subject ~ to & \quad g_1(x_1) \le 0 \\
+\end{align}
+$$
+where $\tilde f(x_1) = min\{f(x_1, x_2): g_2(x_2)\le 0\}$. **If the first problem is convex, the second problem is also convex** due to the feasible set of the first problem is convex.
 
-## Linear Programming
+Using partial optimization and hinge loss, we can get the **hinge form of SVMs**
+$$
+min_{\beta, \beta_0}\qquad \frac 1 2 ||\beta||^2_2+C\sum^n_{i=1}[1-y_i(x_i^T\beta+\beta_0)]_+
+$$
+**Questions:**
 
-## Quadratic  optimization
+**Is this convex?**: Yes, it is clear that there is a quadratic component and a linear component for object function.
 
-## Geometric programming
+**Is the solution $\{\beta, \beta_0, \xi\}$ unique?**: No, the problem is not **strict convex** due to the linear component, hence the solution is not unique
+
+**Is the $\beta$ part unique?**: Yes, this means the weights are unique.
 
 
 
