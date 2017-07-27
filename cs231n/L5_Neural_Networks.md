@@ -81,3 +81,17 @@ In practice, we use a single, global L2 regularization by cross-validation. And 
 
 ## Loss
 
+### Large number of classes
+
+When the set of labels is very large, it may be helpful to use **Hierachical Softmax**. The hierachical softmax decomposes labels into a tree.  Each label is then represented as a path along the tree, and a Softmax classifier is trained at every node of the tree to disambiguate between the left and right branch. The structure of the tree strongly impacts the performance and is generally problem-dependent.
+
+### Regression
+
+The most popular form of regression is **mean loss square**, but it is much harder to optimize than a more stable loss such as softmax.
+
+1. The magnitude of softmax does not influence the result, but those value of regression would be influent
+2. The L2 loss is less robust because outliers can introduce huge gradients
+3. Applying dropout is not a good idea
+
+**When we faced with a regression task, first consider if it is absolutely necessary. Instead, have a strong perference to discretizing your outputs to bins and perform classification over them whenever possible**
+
