@@ -1,4 +1,4 @@
-# Neural Networks I: Setting up the Architecture
+# Neural Networks
 
 ## Activation functions
 
@@ -95,3 +95,12 @@ The most popular form of regression is **mean loss square**, but it is much hard
 
 **When we faced with a regression task, first consider if it is absolutely necessary. Instead, have a strong perference to discretizing your outputs to bins and perform classification over them whenever possible**
 
+## Before learning: sanity checks Tips/Tricks
+
+1. Look for **correct loss** at chance performance
+2. **Increasing the regularization strength should increase the loss**, if not we can add model complexity
+3. **Overfit a tiny subset of data**. Lastly and most importantly, before training on the full dataset try to train on a tiny portion (e.g. 20 examples) of your data and make sure you can achieve zero cost. 
+
+## Babysitting the learning process
+
+1. Training accuracy and validation accuracy with epoch. If validation accuracy is far from training accuracy, we can increase regularization (e.g stronger l2 weight penalty, more dropout) or collect more data. If the validation accuracy tracks the training accuracy fairly well, this indicates your model capacity is not high enough. We can make the model larger by increaseing the number of parameters
