@@ -145,6 +145,55 @@ Notes:
 
 ### Proximal and gradient projection methods
 
+#### Motivation
+
+Consider a convex objective of the form
+$$
+f(\theta) = g(\theta) + h(\theta)
+$$
+where $g(\theta)$ is convex and differentiable, and $h(\theta)$ is convex but not necessarily differentiable.
+
+If $f$ were differentiable, then gradient descent update would be:
+$$
+x^+ = x - t \cdot \nabla f(x)
+$$
+Or, we can **minimize quadratic approximation to $f$ around $x$, replace $\nabla^2f(x)$ by $\frac 1 t \mathbf I$**
+$$
+x^+ = argmin_z f(x) + \nabla f(x)^T(z - x) + \frac 1 {2t} ||z-x||^2_2
+$$
+The idea is from **Taylor extension**, 
+$$
+f(y) \approx f(x) + \nabla f(x)^T(y-x) + \frac 1 {2t}||y-x||^2_x
+$$
+In this case,
+$$
+\begin{align}
+x^+ & = argmin_z \hat g_t(z) + h(z) \\
+& = argmin_z g(x) + \nabla g(x)^T (z- x) + \frac 1 {2t} ||z- x||^2_x + h(z) \\
+& = argmin_z \frac 1 {2t} ||z - (x - t\nabla g(x))||^2_2 + h(z)
+\end{align}
+$$
+
+#### Mathematic
+
+Define proximal mapping:
+$$
+prox_t(x) = argmin_z \frac 1 {2t}||x-z||^2_2 + h(z)
+$$
+
+Then **proximal gradient descent** is: choose initialize $x^0$, repeat
+$$
+x^k = prox_t(x^{k-1}-t_k\nabla g(x^{k-1})), \qquad k =1, 2, 3, ...
+$$
+Or we can rewrite it as
+$$
+x^k = x^{k-1} - t_k\cdot G_{t_k}(x^{k-1})
+$$
+where $G_t$ is the generalized gradient of $f$,
+$$
+G_t(x) = \frac {x - prox_t(x- t\nabla g(x))} {t}
+$$
+
 ## L1 regularization: extensions
 
 ### Group lasso
