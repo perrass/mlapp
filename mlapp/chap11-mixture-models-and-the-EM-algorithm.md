@@ -73,6 +73,35 @@ $$
 
 ### EM for GMMs
 
+#### Auxiliary function
+
+The expected complete data log likelihood is given by
+$$
+\begin{align}
+Q(\theta, \theta^{t-1}) & = E[\sum_i logp(\mathbf x_i, z_i | \theta)] \\ 
+& = \sum_i E[log[\prod^K_{k=1}(\pi_kp(\mathbf x_i|\theta_k))^{I(z_i=k)}]] \\
+& = \sum_i \sum_k E[I(z_i=k)]log(\pi_k p(\mathbf x_i|\theta_k)) \\
+& = \sum_i\sum_k p(z_i=k|\mathbf x_i, \theta^{t-1})log(\pi_kp(\mathbf x_i|\theta_k))\\
+& = \sum_i\sum_k r_{ik}log_{\pi_k} + \sum_i\sum_k r_{ik}log p(\mathbf x_i |\theta_k)
+\end{align}
+$$
+where $r_{ik} = p(z_i = k|\mathbf x_i, \theta^{t-1})$ is the **responsibilty** that cluster $k$ takes for data point $i$. **This is computed in the E step**
+
+#### E step
+
+The E step is **the same for any mixture model** and is **to compute the responsibility**
+$$
+r_{ik} = \frac {\pi_k p(\mathbf x_i |\theta^{t-1}_k)} {\sum_{k'}\pi_{k'}p(\mathbf x_i | \theta_{k'}^{t-1})}
+$$
+
+#### M step
+
+In the M step, we **optimize $Q$ wrt $\pi$ and the $\theta_k$**. For $\pi$,
+$$
+\pi_k = \frac 1 N \sum_i r_{ik} = \frac {r_k} {N}
+$$
+
+
 ### Theoretical basis
 
 ## Model selection for latent variable mdoels
