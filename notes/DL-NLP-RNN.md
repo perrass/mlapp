@@ -8,6 +8,39 @@ parse word and punctuation to int
 
 -> get two dicts, int to word, and word to int
 
+#### Subsampling
+
+只有计算词向量的时候用subsampling
+
+除去过多重复的词
+$$
+P(w_i) = (\sqrt{z(w_i)\over 0.001} + 1)\cdot{0.001\over z(w_i)}
+$$
+$z(w_i)$千分之7，一半
+
+#### Get_batches
+
+```python
+[
+  # First Batch
+  [
+    # Batch of Input
+    [[ 1  2  3], [ 7  8  9]],
+    # Batch of targets
+    [[ 2  3  4], [ 8  9 10]]
+  ],
+ 
+  # Second Batch
+  [
+    # Batch of Input
+    [[ 4  5  6], [10 11 12]],
+    # Batch of targets
+    [[ 5  6  7], [11 12 13]]
+  ]
+]
+```
+batch num and sequence length, sequence length perfers the amout of words in each line
+
 #### `init_cell`
 
 2-layer LSTM/RNN/GRU
@@ -86,3 +119,7 @@ $$
 $$
 h_t = o_t * tanh(C_t)
 $$
+
+## Word2vec
+
+For one input (1 * 10000) is multiplies by a 10000 * 300 matrx, return a 1 * 300 vector, assuming there are 300 features
